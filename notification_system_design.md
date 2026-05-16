@@ -128,3 +128,32 @@ SELECT *
 FROM notifications
 WHERE notificationType = 'Placement'
 AND createdAt >= NOW() - INTERVAL '7 days';
+
+# Stage 4
+
+## Suggested Improvements
+
+- Redis caching
+- Pagination
+- Lazy loading
+- Database indexing
+
+---
+
+## Tradeoffs
+
+### Caching
+Pros:
+- Faster responses
+
+Cons:
+- Cache invalidation complexity
+
+---
+
+### Pagination
+Pros:
+- Lower DB load
+
+Cons:
+- Multiple API calls needed
