@@ -48,3 +48,44 @@ Authorization: Bearer token
 
 WebSockets can be used for real-time notifications.
 Whenever a new notification is created, the server pushes the notification instantly to connected clients.
+
+# Stage 2
+
+## Suggested Database
+
+PostgreSQL can be used.
+
+## Notification Table
+
+| Column | Type |
+|---|---|
+| id | UUID |
+| studentId | Integer |
+| type | String |
+| message | Text |
+| isRead | Boolean |
+| createdAt | Timestamp |
+
+---
+
+## Problems as Data Grows
+
+- Slow queries
+- Increased DB load
+- High memory usage
+
+---
+
+## Solutions
+
+- Indexing
+- Pagination
+- Caching
+- Partitioning
+
+---
+
+## Sample Query
+
+SELECT * FROM notifications
+WHERE studentId = 101;
