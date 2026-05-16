@@ -1,14 +1,13 @@
 const axios = require("axios");
+const knapsack = require("./scheduler");
 
-const selectVehicles = require("./scheduler");
-
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiYXVkIjoiaHR0cDovLzIwLjI0NC41Ni4xNDQvZXZhbHVhdGlvbi1zZXJ2aWNlIiwiZW1haWwiOiJzd2F0aGkuMjAyMkB2aXRzdHVkZW50LmFjLmluIiwiZXhwIjoxNzc4OTI5NDI3LCJpYXQiOjE3Nzg5Mjg1MjcsImlzcyI6IkFmZm9yZCBNZWRpY2FsIFRlY2hub2xvZ2llcyBQcml2YXRlIExpbWl0ZWQiLCJqdGkiOiI4MTZlZDYzOC03MTQ5LTRlZjAtODIzNC1kM2ZlN2E1MzNlZGIiLCJsb2NhbGUiOiJlbi1JTiIsIm5hbWUiOiJzd2F0aGkgZCIsInN1YiI6IjFmZGM0OGQ3LWYwZWQtNDlhZS04ZjNjLWQzMzJkZmFkMzcxOSJ9LCJlbWFpbCI6InN3YXRoaS4yMDIyQHZpdHN0dWRlbnQuYWMuaW4iLCJuYW1lIjoic3dhdGhpIGQiLCJyb2xsTm8iOiIyMm1pZDAwMzUiLCJhY2Nlc3NDb2RlIjoiU2ZGdVdnIiwiY2xpZW50SUQiOiIxZmRjNDhkNy1mMGVkLTQ5YWUtOGYzYy1kMzMyZGZhZDM3MTkiLCJjbGllbnRTZWNyZXQiOiJ6bnVTSFpNeXZDRW5EY0FtIn0.rMP8kCf0VUvQO8llehhOO8aEdYmEKTHBifc0xzHqIZo";
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiYXVkIjoiaHR0cDovLzIwLjI0NC41Ni4xNDQvZXZhbHVhdGlvbi1zZXJ2aWNlIiwiZW1haWwiOiJzd2F0aGkuMjAyMkB2aXRzdHVkZW50LmFjLmluIiwiZXhwIjoxNzc4OTMwOTI3LCJpYXQiOjE3Nzg5MzAwMjcsImlzcyI6IkFmZm9yZCBNZWRpY2FsIFRlY2hub2xvZ2llcyBQcml2YXRlIExpbWl0ZWQiLCJqdGkiOiJlNWQ2NTMxYy1iZjA0LTRjYmMtYmEwMi1kOGQzZjk1OTViMDEiLCJsb2NhbGUiOiJlbi1JTiIsIm5hbWUiOiJzd2F0aGkgZCIsInN1YiI6IjFmZGM0OGQ3LWYwZWQtNDlhZS04ZjNjLWQzMzJkZmFkMzcxOSJ9LCJlbWFpbCI6InN3YXRoaS4yMDIyQHZpdHN0dWRlbnQuYWMuaW4iLCJuYW1lIjoic3dhdGhpIGQiLCJyb2xsTm8iOiIyMm1pZDAwMzUiLCJhY2Nlc3NDb2RlIjoiU2ZGdVdnIiwiY2xpZW50SUQiOiIxZmRjNDhkNy1mMGVkLTQ5YWUtOGYzYy1kMzMyZGZhZDM3MTkiLCJjbGllbnRTZWNyZXQiOiJ6bnVTSFpNeXZDRW5EY0FtIn0.P8pjo9cHFN5RZhhy37dFO8RvmCyviNchtXrZwt1Pj-0";
 
 async function runScheduler() {
 
     try {
 
-        const depotResponse = await axios.get(
+        const depotsResponse = await axios.get(
             "http://4.224.186.213/evaluation-service/depots",
             {
                 headers: {
@@ -17,7 +16,7 @@ async function runScheduler() {
             }
         );
 
-        const vehicleResponse = await axios.get(
+        const vehiclesResponse = await axios.get(
             "http://4.224.186.213/evaluation-service/vehicles",
             {
                 headers: {
@@ -26,28 +25,24 @@ async function runScheduler() {
             }
         );
 
-        const depots = depotResponse.data.depots;
+        const depots = depotsResponse.data.depots;
+        const vehicles = vehiclesResponse.data.vehicles;
 
-        const vehicles = vehicleResponse.data.vehicles;
+        for (const depot of depots) {
 
-        for (let depot of depots) {
-
-            const result = selectVehicles(
+            const result = knapsack(
                 vehicles,
                 depot.MechanicHours
             );
 
-            console.log("Depot ID:", depot.ID);
-
-            console.log(result);
-
-            console.log("----------------");
+            console.log({
+                depotId: depot.ID,
+                maxImpact: result
+            });
         }
 
     } catch (error) {
-
-        console.log(error.response?.data || error.message);
-
+        console.log(error.message);
     }
 }
 

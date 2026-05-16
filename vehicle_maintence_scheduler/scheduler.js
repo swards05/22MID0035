@@ -1,24 +1,32 @@
-function selectVehicles(vehicles, maxHours) {
+function knapsack(tasks, hours) {
 
-    vehicles.sort((a, b) => {
-        return (b.Impact / b.Duration) - (a.Impact / a.Duration);
-    });
+    const n = tasks.length;
 
-    let totalHours = 0;
+    const dp = Array(n + 1)
+        .fill()
+        .map(() => Array(hours + 1).fill(0));
 
-    let selected = [];
+    for (let i = 1; i <= n; i++) {
 
-    for (let vehicle of vehicles) {
+        const duration = tasks[i - 1].Duration;
+        const impact = tasks[i - 1].Impact;
 
-        if (totalHours + vehicle.Duration <= maxHours) {
+        for (let h = 0; h <= hours; h++) {
 
-            selected.push(vehicle);
+            if (duration <= h) {
 
-            totalHours += vehicle.Duration;
+                dp[i][h] = Math.max(
+                    impact + dp[i - 1][h - duration],
+                    dp[i - 1][h]
+                );
+
+            } else {
+                dp[i][h] = dp[i - 1][h];
+            }
         }
     }
 
-    return selected;
+    return dp[n][hours];
 }
 
-module.exports = selectVehicles;
+module.exports = knapsack;
