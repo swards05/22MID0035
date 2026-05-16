@@ -157,3 +157,44 @@ Pros:
 
 Cons:
 - Multiple API calls needed
+
+# Stage 5
+
+## Problems in Existing Approach
+
+- Sequential processing is slow
+- Email failures stop execution
+- High response time
+
+---
+
+## Better Design
+
+- Use message queues
+- Process emails asynchronously
+- Separate DB writes from notifications
+
+---
+
+## Revised Pseudocode
+
+function notify_all(student_ids, message):
+
+    add_jobs_to_queue(student_ids)
+
+worker():
+
+    send_email()
+
+    save_to_db()
+
+    push_to_app()
+
+---
+
+## Why Queue?
+
+Queues improve:
+- scalability
+- retry mechanisms
+- fault tolerance
