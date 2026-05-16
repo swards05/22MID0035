@@ -89,3 +89,42 @@ PostgreSQL can be used.
 
 SELECT * FROM notifications
 WHERE studentId = 101;
+
+# Stage 3
+
+## Problem
+
+The query becomes slow because millions of notifications are scanned.
+
+---
+
+## Better Query
+
+CREATE INDEX idx_notifications_student_read
+ON notifications(studentId, isRead);
+
+SELECT *
+FROM notifications
+WHERE studentId = 1042
+AND isRead = false
+ORDER BY createdAt DESC;
+
+---
+
+## Why Not Index Every Column?
+
+Too many indexes:
+- increase storage
+- slow inserts/updates
+- unnecessary overhead
+
+Indexes should only be added for frequently queried columns.
+
+---
+
+## Query for Placement Notifications
+
+SELECT *
+FROM notifications
+WHERE notificationType = 'Placement'
+AND createdAt >= NOW() - INTERVAL '7 days';
